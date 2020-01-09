@@ -20,4 +20,3 @@ io.on('connection', function(socket){
 });
 
 // test
-// test_2
