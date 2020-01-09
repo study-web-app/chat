@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <title>chat</title>
+</head>
+<body>
+    <div class='container'>
+        <form name="myform">
+            <input name="text" type="text">
+            <button name="btn">送信</button>
+        </form>
+        <hr>
+        <ul id="message"></ul>
+    </div>
+
+    <script>
+        var socket = io();
+        var message = document.getElementById('message');   // DOMメソッド：id名messegeの要素を取得
+        var form = document.forms.myform;
+
+        form.btn.addEventListener('click', function(e){     // 送信ボタンクリックイベントの登録
+        // 送信ボタンがクリックされた時のイベント処理
+
+            e.preventDefault();                             // ★要確認★　これが無いと次画面に投稿文章が表示されない
+
+            socket.emit('chat', form.text.value);           // サーバーへメッセージ送信
+            form.text.value = '';                           // テキストボックスをクリア
+        })
+
+        socket.on('chat', function(msg){
+        // サーバーからchatイベントを受信した時の処理
+            var li = document.createElement('li');          // DOMメソッド：<li>要素を生成
+
+            li.textContent = msg;                           // <li>の要素にサーバーから受信したメッセージを設定
+            message.appendChild(li);                        // DOMメソッド：messegeの末尾にサーバーから受信したメッセージを追加
+        });
+    </script>
+</body>
+</html>
